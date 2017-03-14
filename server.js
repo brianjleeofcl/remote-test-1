@@ -15,21 +15,25 @@ app.use(express.static(path.join('public')))
 app.use(parser.raw())
 
 app.post('/upload', (req, res) => {
-  s3.putObject({
-    ACL: 'public-read',
-    Bucket: 'brianjleeofcl-test',
-    Key: `test-${Date.now()}.jpg`,
-    Body: req.body,
-    ContentEncoding: 'base64',
-    ContentType: 'image/jpg',
-  }, (err, data) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500)
-    } else {
-      console.log(data)
-      res.send(data.ETag)
-    }
+  const reqBuffer = []
+  
+  req.on('data', chunk => reqBuffer.push(chunk)).on('end', () => {
+    s3.putObject({
+      ACL: 'public-read',
+      Bucket: 'brianjleeofcl-test',
+      Key: `test-${Date.now()}.jpg`,
+      Body: reqBuffer,
+      ContentEncoding: 'base64',
+      ContentType: 'image/jpg',
+    }, (err, data) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500)
+      } else {
+        console.log(data)
+        res.send(data.ETag)
+      }
+    })
   })
 })
 
