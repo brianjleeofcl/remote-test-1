@@ -15,7 +15,7 @@ app.use(express.static(path.join('public')))
 app.use(parser.raw())
 
 app.post('/upload', (req, res) => {
-  s3.postObject({
+  s3.putObject({
     ACL: 'public-read',
     Bucket: 'brianjleeofcl-test',
     Key: `test-${Date.now()}.jpg`,
