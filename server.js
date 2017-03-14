@@ -16,13 +16,14 @@ app.use(parser.raw())
 
 app.post('/upload', (req, res) => {
   const reqBuffer = []
-  
+
   req.on('data', chunk => reqBuffer.push(chunk)).on('end', () => {
+    const reqBody = Buffer.concat(reqBuffer)
     s3.putObject({
       ACL: 'public-read',
       Bucket: 'brianjleeofcl-test',
       Key: `test-${Date.now()}.jpg`,
-      Body: reqBuffer,
+      Body: reqBody,
       ContentEncoding: 'base64',
       ContentType: 'image/jpg',
     }, (err, data) => {
