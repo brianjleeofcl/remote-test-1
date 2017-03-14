@@ -50,8 +50,10 @@ io.on('connection', (client) => {
     client.emit('instruction-received', 'Instructions sent')
   })
 
-  client.on('instructor-camera-server', (interval, term) => {
+  client.on('instruction-camera-server', (interval, term) => {
     client.to('room').emit('instruction-camera-on', interval, term)
     client.emit('instruction-received', 'Instructions sent')
   })
+
+  client.on('message', console.log)
 })
